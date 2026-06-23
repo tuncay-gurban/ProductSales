@@ -1,8 +1,8 @@
-package com.example.test2.controller;
+package com.example.productsales.controller;
 
-import com.example.test2.dto.CategoryRequest;
-import com.example.test2.dto.CategoryResponse;
-import com.example.test2.service.CategoryService;
+import com.example.productsales.dto.CategoryRequest;
+import com.example.productsales.dto.CategoryResponse;
+import com.example.productsales.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,6 +30,11 @@ public class CategoryController {
     @GetMapping("/{id}")
     public ResponseEntity<CategoryResponse> getId(@PathVariable Long id) {
         return ResponseEntity.ok(service.getId(id));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<CategoryResponse> getByName(@RequestParam String name) {
+        return ResponseEntity.ok(service.getByName(name));
     }
 
     @PutMapping("/{id}")

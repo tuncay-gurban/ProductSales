@@ -1,0 +1,48 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-admin-user
+      author: tuncay
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: user_name
+                  value: admin
+              - column:
+                  name: email
+                  value: admin@example.com
+              - column:
+                  name: password
+                  value: $2a$10$a5/2pT1CHO0J96x8pDK2Ae9nkQ6yMf8BKfnm7i1VrmdeN5rCVJ6TS
+  - changeSet:
+      id: 002-assign-admin-role
+      author: tuncay
+      changes:
+        - insert:
+            tableName: user_roles
+            columns:
+              - column:
+                  name: user_id
+                  valueComputed: (SELECT id FROM users WHERE email = 'admin@example.com')
+              - column:
+                  name: roles
+                  value: ADMIN
+  - changeSet:
+      id: 003-create-new-column
+      author: tuncay
+      changes:
+        - addColumn:
+            tableName: products
+            columns:
+              - column:
+                  name: description
+                  type: varchar(100)
+              - column:
+                  name: weight
+                  type: DOUBLE PRECISION
+        - modifyDataType:
+            tableName: products
+            columnName: price
+            newDataType: numeric(19, 2)
+

@@ -1,9 +1,9 @@
-package com.example.test2.mapper;
+package com.example.productsales.mapper;
 
 
-import com.example.test2.dto.CategoryRequest;
-import com.example.test2.dto.CategoryResponse;
-import com.example.test2.entity.Category;
+import com.example.productsales.dto.CategoryRequest;
+import com.example.productsales.dto.CategoryResponse;
+import com.example.productsales.entity.Category;
 import org.mapstruct.Mapper;
 
 import java.util.List;

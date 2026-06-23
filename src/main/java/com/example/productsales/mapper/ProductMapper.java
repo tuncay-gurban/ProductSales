@@ -1,15 +1,19 @@
-package com.example.test2.mapper;
+package com.example.productsales.mapper;
 
-import com.example.test2.dto.ProductRequest;
-import com.example.test2.dto.ProductResponse;
-import com.example.test2.entity.Product;
+import com.example.productsales.dto.ProductRequest;
+import com.example.productsales.dto.ProductResponse;
+import com.example.productsales.entity.Product;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 
 
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
+
+    @Mapping(target = "category", ignore = true)
+    @Mapping(target = "tags",ignore = true)
     Product toEntity(ProductRequest request);
 
     ProductResponse toResponse(Product product);

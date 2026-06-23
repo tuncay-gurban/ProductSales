@@ -3,5 +3,9 @@ package com.example.productsales.repository;
 import com.example.productsales.entity.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TagReppository extends JpaRepository<Tag, Long> {
+import java.util.Optional;
+
+public interface TagRepository extends JpaRepository<Tag, Long> {
+    Optional<Tag> findById(Long id);
+    Optional<Tag> findByName(String name);
 }

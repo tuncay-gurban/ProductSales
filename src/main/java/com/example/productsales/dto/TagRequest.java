@@ -1,13 +1,10 @@
-package com.example.test2.dto;
+package com.example.productsales.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 public class TagRequest {
     @NotBlank(message = "Ad bos ola bilmez")
     private String name;

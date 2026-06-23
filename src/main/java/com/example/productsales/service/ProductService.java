@@ -1,17 +1,20 @@
-package com.example.test2.service;
+package com.example.productsales.service;
 
-import com.example.test2.dto.ProductRequest;
-import com.example.test2.dto.ProductResponse;
-import com.example.test2.entity.Product;
-import com.example.test2.entity.ProductDetail;
-import com.example.test2.exception.ProductNotFoundException;
-import com.example.test2.mapper.ProductMapper;
-import com.example.test2.repository.ProductDetailRepository;
-import com.example.test2.repository.ProductRepository;
+import com.example.productsales.dto.ProductRequest;
+import com.example.productsales.dto.ProductResponse;
+import com.example.productsales.entity.Category;
+import com.example.productsales.entity.Product;
+import com.example.productsales.entity.Tag;
+import com.example.productsales.exception.CategoryNotFoundException;
+import com.example.productsales.exception.ProductNotFoundException;
+import com.example.productsales.mapper.ProductMapper;
+import com.example.productsales.repository.CategoryRepository;
+import com.example.productsales.repository.ProductRepository;
+import com.example.productsales.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -19,10 +22,16 @@ import java.util.List;
 public class ProductService {
     private final ProductRepository repository;
     private final ProductMapper mapper;
-    private final ProductDetailRepository productDetailRepository;
+    private final CategoryRepository categoryRepository;
+    private final TagRepository tagRepository;
 
     public ProductResponse create(ProductRequest request) {
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new CategoryNotFoundException("Bu id ile kateqoriya tapilmadi" + request.getCategoryId()));
+        List<Tag> tags = tagRepository.findAllById(request.getTagIds());
         Product entity = mapper.toEntity(request);
+        entity.setCategory(category);
+        entity.setTags(new HashSet<>(tags));
         Product saved = repository.save(entity);
         return mapper.toResponse(saved);
     }
@@ -48,8 +57,16 @@ public class ProductService {
     public ProductResponse update(ProductRequest request, Long id) {
         Product product = repository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Mehsul tapilmadi"));
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new CategoryNotFoundException("Kateqoriya tapilmadi"));
+        List<Tag> tags = tagRepository.findAllById(request.getTagIds());
         product.setName(request.getName());
         product.setPrice(request.getPrice());
+        product.setDescription(request.getDescription());
+        product.setWeight(request.getWeight());
+        product.setCategory(category);
+        product.setTags(new HashSet<>(tags));
+
         return mapper.toResponse(repository.save(product));
     }
 
@@ -60,23 +77,5 @@ public class ProductService {
         repository.delete(product);
     }
 
-//    @Transactional
-//    public Product createProductWithDetail(String description,Double weight){
-//        ProductDetail detail = new ProductDetail();
-//        detail.setDescription(description);
-//        detail.setWeight(weight);
-//        productDetailRepository.save(detail);
-//
-//        Product product = new Product();
-//        product.setName("Samsung");
-//        product.setPrice(2500.0);
-//        product.setProductDetail(detail);
-//        return repository.save(product);
-//    }
-//
-//    @Transactional(readOnly = true)
-//    public List<Product> getAllProducts(){
-//         return repository.findAll();
-//    }
 
 }

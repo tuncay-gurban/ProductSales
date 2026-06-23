@@ -1,11 +1,9 @@
-package com.example.test2.dto;
+package com.example.productsales.dto;
 
 import lombok.*;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
 public class CategoryResponse {
     private String name;

@@ -1,12 +1,12 @@
-package com.example.test2.service;
+package com.example.productsales.service;
 
-import com.example.test2.dto.CategoryRequest;
-import com.example.test2.dto.ProductDetailRequest;
-import com.example.test2.dto.CategoryResponse;
-import com.example.test2.entity.Category;
-import com.example.test2.exception.ProductNotFoundException;
-import com.example.test2.mapper.CategoryMapper;
-import com.example.test2.repository.CategoryRepository;
+import com.example.productsales.dto.CategoryRequest;
+import com.example.productsales.dto.CategoryResponse;
+import com.example.productsales.entity.Category;
+import com.example.productsales.exception.CategoryNotFoundException;
+import com.example.productsales.exception.ProductNotFoundException;
+import com.example.productsales.mapper.CategoryMapper;
+import com.example.productsales.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,20 +31,31 @@ public class CategoryService {
 
     public CategoryResponse getId(Long id) {
         Category category = repository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Category tapilmadi"));
+                .orElseThrow(() -> new CategoryNotFoundException("Kateqoriya tapilmadi"));
         return mapper.toResponse(category);
     }
 
+    public CategoryResponse getByName(String name){
+        Category category = repository.findByName(name)
+                .orElseThrow(()-> new CategoryNotFoundException("Kateqoriya tapilmadi"));
+        return mapper.toResponse(category);
+    }
+
+
+
+
+
+
     public CategoryResponse update(Long id, CategoryRequest request) {
         Category category = repository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Category tapilmadi"));
+                .orElseThrow(() -> new CategoryNotFoundException("Kateqoriya tapilmadi"));
         category.setName(request.getName());
         return mapper.toResponse(repository.save(category));
     }
 
     public void delete(Long id) {
         Category category = repository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Category tapilmadi"));
+                .orElseThrow(() -> new CategoryNotFoundException("Kateqoriya tapilmadi"));
         repository.delete(category);
     }
 }

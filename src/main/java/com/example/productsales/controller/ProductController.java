@@ -1,8 +1,8 @@
-package com.example.test2.controller;
+package com.example.productsales.controller;
 
-import com.example.test2.dto.ProductRequest;
-import com.example.test2.dto.ProductResponse;
-import com.example.test2.service.ProductService;
+import com.example.productsales.dto.ProductRequest;
+import com.example.productsales.dto.ProductResponse;
+import com.example.productsales.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,11 +24,13 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<List<ProductResponse>> getAll() {
+
         return ResponseEntity.ok(service.getAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getId(@PathVariable Long id) {
+
         return ResponseEntity.ok(service.getId(id));
     }
 

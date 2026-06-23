@@ -1,8 +1,9 @@
-package com.example.test2.entity;
+package com.example.productsales.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 @Entity
@@ -17,7 +18,9 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private Double price;
+    private BigDecimal price;
+    private String description;
+    private Double weight;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
@@ -31,7 +34,4 @@ public class Product {
     )
     private Set<Tag> tags;
 
-    @OneToOne
-    @JoinColumn(name = "detail_id")
-    private ProductDetail productDetail;
 }
