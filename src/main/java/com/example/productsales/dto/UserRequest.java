@@ -1,6 +1,6 @@
 package com.example.productsales.dto;
 
-import com.example.productsales.entity.Role;
+import com.example.productsales.enums.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;

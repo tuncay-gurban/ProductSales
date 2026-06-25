@@ -4,10 +4,12 @@ import com.example.productsales.dto.LoginRequest;
 import com.example.productsales.dto.LoginResponse;
 import com.example.productsales.dto.UserRequest;
 import com.example.productsales.dto.UserResponse;
-import com.example.productsales.entity.Role;
+import com.example.productsales.entity.Cart;
+import com.example.productsales.enums.Role;
 import com.example.productsales.entity.User;
 import com.example.productsales.exception.EmailAlreadyExistsException;
 import com.example.productsales.mapper.UserMapper;
+import com.example.productsales.repository.CartRepository;
 import com.example.productsales.repository.UserRepository;
 import com.example.productsales.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ public class UserService {
     private final PasswordEncoder encoder;
     private final AuthenticationManager authManager;
     private final JwtUtil jwtUtil;
+    private final CartRepository cartRepository;
 
     public UserResponse register(UserRequest request) {
         if (repository.existsByEmail(request.getEmail())) {
@@ -34,7 +37,11 @@ public class UserService {
         User entity = mapper.toEntity(request);
         entity.setRoles(Set.of(Role.USER));
         entity.setPassword(encoder.encode(request.getPassword()));
-        return mapper.toResponse(repository.save(entity));
+        User saved = repository.save(entity);
+        Cart cart = new Cart();
+        cart.setUser(saved);
+        cartRepository.save(cart);
+        return mapper.toResponse(saved);
     }
 
     public LoginResponse login(LoginRequest request) {
