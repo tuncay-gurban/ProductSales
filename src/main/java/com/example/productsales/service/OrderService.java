@@ -7,6 +7,7 @@ import com.example.productsales.enums.OrderStatus;
 import com.example.productsales.repository.CartRepository;
 import com.example.productsales.repository.OrderRepository;
 import com.example.productsales.repository.UserRepository;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final CartRepository cartRepository;
     private final UserRepository userRepository;
+    private final MeterRegistry meterRegistry;
 
     private User getCurrent() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -67,6 +69,7 @@ public class OrderService {
         Order saved = orderRepository.save(order);
         cart.getItems().clear();
         cartRepository.save(cart);
+        meterRegistry.counter("orders.created").increment();
         return toResponse(saved);
     }
 
