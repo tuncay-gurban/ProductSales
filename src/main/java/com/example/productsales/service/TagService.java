@@ -28,26 +28,26 @@ public class TagService {
 
     public TagResponse getId(Long id) {
         Tag tag = repository.findById(id)
-                .orElseThrow(() -> new TagNotFoundException("Tag tapilmadi"));
+                .orElseThrow(() -> new TagNotFoundException("Tag not found"));
         return mapper.toResponse(tag);
     }
 
     public TagResponse getByName(String name) {
         Tag tag = repository.findByName(name)
-                .orElseThrow(() -> new TagNotFoundException("Tag tapilmadi"));
+                .orElseThrow(() -> new TagNotFoundException("Tag not found"));
         return mapper.toResponse(tag);
     }
 
     public TagResponse update(TagRequest request, Long id) {
         Tag tag = repository.findById(id)
-                .orElseThrow(() -> new TagNotFoundException("Tag tapilmadi"));
+                .orElseThrow(() -> new TagNotFoundException("Tag not found"));
         tag.setName(request.getName());
         return mapper.toResponse(repository.save(tag));
     }
 
     public void delete(Long id) {
         Tag tag = repository.findById(id)
-                .orElseThrow(() -> new TagNotFoundException("Tag tapilmadi"));
+                .orElseThrow(() -> new TagNotFoundException("Tag not found"));
         repository.delete(tag);
     }
 }

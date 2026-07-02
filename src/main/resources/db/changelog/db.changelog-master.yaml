@@ -196,6 +196,53 @@ databaseChangeLog:
             referencedColumnNames: id
             constraintName: fk_order_items_product
 
+  - changeSet:
+       id: 008-create-payments.yml
+       author: tuncay
+       changes:
+         - createTable:
+             tableName: payments
+             columns:
+               - column:
+                   name: id
+                   type: bigint
+                   autoIncrement: true
+                   constraints:
+                     primaryKey: true
+                     nullable: false
+               - column:
+                   name: order_id
+                   type: bigint
+                   constraints:
+                     nullable: false
+               - column:
+                   name: amount
+                   type: numeric(19,2)
+               - column:
+                   name: status
+                   type: varchar(50)
+               - column:
+                   name: method
+                   type: varchar(50)
+               - column:
+                   name: paid_at
+                   type: timestamp
+               - column:
+                   name: transaction_ref
+                   type: varchar(255)
+         - addForeignKeyConstraint:
+             constraintName: fk_payments_order
+             baseTableName: payments
+             baseColumnNames: order_id
+             referencedTableName: orders
+             referencedColumnNames: id
+
+
+
+
+
+
+
 
 
 

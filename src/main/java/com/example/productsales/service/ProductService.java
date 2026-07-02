@@ -27,7 +27,7 @@ public class ProductService {
 
     public ProductResponse create(ProductRequest request) {
         Category category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new CategoryNotFoundException("Bu id ile kateqoriya tapilmadi" + request.getCategoryId()));
+                .orElseThrow(() -> new CategoryNotFoundException("Category not found with id: " + request.getCategoryId()));
         List<Tag> tags = tagRepository.findAllById(request.getTagIds());
         Product entity = mapper.toEntity(request);
         entity.setCategory(category);
@@ -43,22 +43,22 @@ public class ProductService {
 
     public ProductResponse getId(Long id) {
         Product product = repository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Mehsul tapilmadi"));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
         return mapper.toResponse(product);
     }
 
     public ProductResponse getByName(String name) {
         Product product = repository.findByName(name)
-                .orElseThrow(() -> new ProductNotFoundException("Mehsul tapilmadi"));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
         return mapper.toResponse(product);
     }
 
 
     public ProductResponse update(ProductRequest request, Long id) {
         Product product = repository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Mehsul tapilmadi"));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
         Category category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new CategoryNotFoundException("Kateqoriya tapilmadi"));
+                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
         List<Tag> tags = tagRepository.findAllById(request.getTagIds());
         product.setName(request.getName());
         product.setPrice(request.getPrice());
@@ -73,7 +73,7 @@ public class ProductService {
 
     public void delete(Long id) {
         Product product = repository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Mehsul tapilmadi"));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
         repository.delete(product);
     }
 

@@ -7,7 +7,9 @@ import com.example.productsales.entity.Cart;
 import com.example.productsales.entity.CartItem;
 import com.example.productsales.entity.Product;
 import com.example.productsales.entity.User;
+import com.example.productsales.exception.CartNotFoundException;
 import com.example.productsales.exception.ProductNotFoundException;
+import com.example.productsales.exception.UserNotFoundException;
 import com.example.productsales.repository.CartItemRepository;
 import com.example.productsales.repository.CartRepository;
 import com.example.productsales.repository.ProductRepository;
@@ -34,13 +36,13 @@ public class CartService {
                 SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
     public CartResponse getCart() {
         User user = getCurrentUser();
         Cart cart = cartRepository.findByUser(user)
-                .orElseThrow(() -> new RuntimeException("Cart not found"));
+                .orElseThrow(() -> new CartNotFoundException("Cart not found"));
         return toResponse(cart);
     }
 
@@ -48,9 +50,9 @@ public class CartService {
     public CartResponse addItem(CartItemrequest request) {
         User user = getCurrentUser();
         Cart cart = cartRepository.findByUser(user)
-                .orElseThrow(() -> new RuntimeException("Cart not found"));
+                .orElseThrow(() -> new CartNotFoundException("Cart not found"));
         Product product = productRepository.findById(request.getProductId())
-                .orElseThrow(() -> new ProductNotFoundException("Mehsul tapilmadi"));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
         Optional<CartItem> existingItem = cart.getItems().stream()
                 .filter(item -> item.getProduct().getId().equals(product.getId()))
                 .findFirst();
@@ -74,11 +76,11 @@ public class CartService {
     public CartResponse updateItem(Long itemId, CartItemrequest request) {
         User user = getCurrentUser();
         Cart cart = cartRepository.findByUser(user)
-                .orElseThrow(() -> new RuntimeException("Cart not found"));
+                .orElseThrow(() -> new CartNotFoundException("Cart not found"));
         CartItem item = cartItemRepository.findById(itemId)
                 .orElseThrow(() -> new RuntimeException("Item not found"));
         if (!item.getCart().getId().equals(cart.getId())) {
-            throw new RuntimeException("Bu item size aid deyil");
+            throw new RuntimeException("This item does not belong to you");
         }
 
         item.setQuantity(request.getQuantity());
@@ -89,11 +91,11 @@ public class CartService {
     public CartResponse removeItem(Long itemId) {
         User user = getCurrentUser();
         Cart cart = cartRepository.findByUser(user)
-                .orElseThrow(() -> new RuntimeException("Cart not found"));
+                .orElseThrow(() -> new CartNotFoundException("Cart not found"));
         CartItem item = cartItemRepository.findById(itemId)
                 .orElseThrow(() -> new RuntimeException("Item not found"));
         if (!item.getCart().getId().equals(cart.getId())) {
-            throw new RuntimeException("Bu item sizin sebetinize aid deyil");
+            throw new RuntimeException("This item does not belong to you");
         }
         cart.getItems().remove(item);
         cartRepository.save(cart);
@@ -103,7 +105,7 @@ public class CartService {
     public CartResponse clearCart() {
         User user = getCurrentUser();
         Cart cart = cartRepository.findByUser(user)
-                .orElseThrow(() -> new RuntimeException("Cart not found"));
+                .orElseThrow(() -> new CartNotFoundException("Cart not found"));
         cart.getItems().clear();
         cartRepository.save(cart);
         return toResponse(cart);

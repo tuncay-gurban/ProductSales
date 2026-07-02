@@ -4,7 +4,6 @@ import com.example.productsales.dto.CategoryRequest;
 import com.example.productsales.dto.CategoryResponse;
 import com.example.productsales.entity.Category;
 import com.example.productsales.exception.CategoryNotFoundException;
-import com.example.productsales.exception.ProductNotFoundException;
 import com.example.productsales.mapper.CategoryMapper;
 import com.example.productsales.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,31 +30,27 @@ public class CategoryService {
 
     public CategoryResponse getId(Long id) {
         Category category = repository.findById(id)
-                .orElseThrow(() -> new CategoryNotFoundException("Kateqoriya tapilmadi"));
+                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
         return mapper.toResponse(category);
     }
 
-    public CategoryResponse getByName(String name){
+    public CategoryResponse getByName(String name) {
         Category category = repository.findByName(name)
-                .orElseThrow(()-> new CategoryNotFoundException("Kateqoriya tapilmadi"));
+                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
         return mapper.toResponse(category);
     }
-
-
-
-
 
 
     public CategoryResponse update(Long id, CategoryRequest request) {
         Category category = repository.findById(id)
-                .orElseThrow(() -> new CategoryNotFoundException("Kateqoriya tapilmadi"));
+                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
         category.setName(request.getName());
         return mapper.toResponse(repository.save(category));
     }
 
     public void delete(Long id) {
         Category category = repository.findById(id)
-                .orElseThrow(() -> new CategoryNotFoundException("Kateqoriya tapilmadi"));
+                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
         repository.delete(category);
     }
 }

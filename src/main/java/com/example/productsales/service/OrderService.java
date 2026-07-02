@@ -4,6 +4,10 @@ import com.example.productsales.dto.OrderItemResponse;
 import com.example.productsales.dto.OrderResponse;
 import com.example.productsales.entity.*;
 import com.example.productsales.enums.OrderStatus;
+import com.example.productsales.exception.CartNotFoundException;
+import com.example.productsales.exception.InvalidOrderStateException;
+import com.example.productsales.exception.OrderNotFoundException;
+import com.example.productsales.exception.UserNotFoundException;
 import com.example.productsales.repository.CartRepository;
 import com.example.productsales.repository.OrderRepository;
 import com.example.productsales.repository.UserRepository;
@@ -29,7 +33,7 @@ public class OrderService {
     private User getCurrent() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
     @Transactional
@@ -37,7 +41,7 @@ public class OrderService {
         User user = getCurrent();
 
         Cart cart = cartRepository.findByUser(user)
-                .orElseThrow(() -> new RuntimeException("Cart not found"));
+                .orElseThrow(() -> new CartNotFoundException("Cart not found"));
 
         if (cart.getItems().isEmpty()) {
             throw new RuntimeException("Cart is Empty");
@@ -83,9 +87,9 @@ public class OrderService {
     public OrderResponse getOrderById(Long id) {
         User user = getCurrent();
         Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new OrderNotFoundException("Order not found"));
         if (!order.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("Order not found");
+            throw new OrderNotFoundException("Order not found");
         }
         return toResponse(order);
     }
@@ -96,10 +100,10 @@ public class OrderService {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
         if (!order.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("Order not found");
+            throw new OrderNotFoundException("Order not found");
         }
         if (order.getStatus() != OrderStatus.PENDING) {
-            throw new RuntimeException("Order cannot be cancelled");
+            throw new InvalidOrderStateException("Order cannot be cancelled");
         }
         order.setStatus(OrderStatus.CANCELLED);
         Order saved = orderRepository.save(order);

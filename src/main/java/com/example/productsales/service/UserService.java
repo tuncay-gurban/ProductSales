@@ -32,7 +32,7 @@ public class UserService {
 
     public UserResponse register(UserRequest request) {
         if (repository.existsByEmail(request.getEmail())) {
-            throw new EmailAlreadyExistsException("Bu email ile artiq register olunub");
+            throw new EmailAlreadyExistsException("This email already exists");
         }
         User entity = mapper.toEntity(request);
         entity.setRoles(Set.of(Role.USER));
@@ -46,8 +46,7 @@ public class UserService {
 
     public LoginResponse login(LoginRequest request) {
         authManager.authenticate(new UsernamePasswordAuthenticationToken
-                (request.getEmail(), request.getPassword())
-        );
+                (request.getEmail(), request.getPassword()));
         String token = jwtUtil.generateToken(request.getEmail());
         return LoginResponse.builder().token(token).build();
     }
