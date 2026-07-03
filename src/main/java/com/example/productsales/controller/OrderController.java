@@ -1,6 +1,7 @@
 package com.example.productsales.controller;
 
 import com.example.productsales.dto.OrderResponse;
+import com.example.productsales.dto.PaymentInitResponse;
 import com.example.productsales.dto.PaymentRequest;
 import com.example.productsales.dto.PaymentResponse;
 import com.example.productsales.service.OrderService;
@@ -40,8 +41,9 @@ public class OrderController {
     }
 
     @PostMapping("/{id}/pay")
-    public ResponseEntity<PaymentResponse> pay(@PathVariable Long id, @RequestBody PaymentRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(paymentService.pay(id, request));
+    public ResponseEntity<PaymentInitResponse> pay(@PathVariable("id") Long orderId,
+                                                   @RequestBody PaymentRequest request) {
+        return ResponseEntity.ok(paymentService.pay(orderId, request));
     }
 
     @GetMapping("/{id}/payment")
